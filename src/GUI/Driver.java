@@ -8,6 +8,7 @@ public class Driver {
 		
 		//Example of serialization.  Run the program and test through text in console.
 		
+		//Serializing a DeckList h into a .ser file.
 		DeckList h = new DeckList();
 		h.name = "ControlHunter";
 		h.cardNames.add("Sludge Belcher");
@@ -22,18 +23,34 @@ public class Driver {
 		
 		try
 		{
-			FileOutputStream fileOut = new FileOutputStream("Decks/HunterDeck.ser");
+			FileOutputStream fileOut = new FileOutputStream("Decks/ControlHunter.ser");
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(h);
 			out.close();
-			fileOut.close();
+			fileOut.close();  //Closes the file that is being written into
 			System.out.println("Deck saved");
 			} catch(IOException i)
 			{
 				i.printStackTrace();
 			}
-      
-		h.printCardInfo();
-      
+		
+		
+		//Deserializing the DeckList ControlHunter.ser into Decklist n
+		
+		DeckList n = null;
+		try
+		{
+			FileInputStream fileIn = new FileInputStream("Decks/ControlHunter.ser");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+	        n = (DeckList) in.readObject();  //Cast from Object return type into DeckList return type
+	        in.close();
+	        fileIn.close(); //Closes the file that is being read from
+	        } catch(IOException | ClassNotFoundException i)
+			{
+	        	i.printStackTrace();
+	        }
+		
+		//Tests to see if file has been deserialized into an object by printing to console
+		n.printCardInfo();
 	}
 }

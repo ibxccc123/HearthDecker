@@ -1,4 +1,4 @@
-#HearthDecker Documentation
+#HearthDecker
 
 Authors: Roy Joo & Danny Peng
 

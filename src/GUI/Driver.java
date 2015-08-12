@@ -52,5 +52,14 @@ public class Driver {
 		
 		//Tests to see if file has been deserialized into an object by printing to console
 		n.printCardInfo();
+		
+		
+		
+		
+		
+		//New experimental.  Tests spinners, which we can use with adding cards.
+		//Check window.java for more info
+		Window window = new Window("HearthDecker");
+		window.setVisible(true);
 	}
 }

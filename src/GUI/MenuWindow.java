@@ -34,8 +34,9 @@ public class MenuWindow extends JFrame  {
             	newDeckWindow.setVisible(true);
             }
         });
-		JButton newLoadButton = new JButton("Load Deck");
-		newLoadButton.addActionListener(new ActionListener() {
+		
+		JButton loadButton = new JButton("Load Deck");
+		loadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
             	
         		JTextField deckField = new JTextField("");
@@ -73,8 +74,49 @@ public class MenuWindow extends JFrame  {
             }
         });
 		
+		JButton editButton = new JButton("Edit Deck");
+		editButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+            	
+        		JTextField deckField = new JTextField("");
+        		JTextField directoryField = new JTextField("");
+    
+        		File workingDirectory = new File(System.getProperty("user.dir"));
+        		JFileChooser c = new JFileChooser();
+        		c.setCurrentDirectory(workingDirectory);
+        		// Loads the DeckList
+        		int rVal = c.showSaveDialog(MenuWindow.this);
+        		if (rVal == JFileChooser.APPROVE_OPTION) {
+        		    deckField.setText(c.getSelectedFile().getName());
+        		    directoryField.setText(c.getCurrentDirectory().toString());
+        		    DeckList deck = null;
+        		    try{
+        		    	String directory = directoryField.getText();
+        		    	String deckName = deckField.getText();
+        		    	FileInputStream fileIn = new FileInputStream(directory + "\\" + deckName);
+        				ObjectInputStream in = new ObjectInputStream(fileIn);
+        		        deck = (DeckList) in.readObject();  //Cast from Object return type into DeckList return type
+        		        in.close();
+        		        fileIn.close(); //Closes the file that is being read from
+                    	dispose();
+                    	NewEditWindow newEditWindow = new NewEditWindow(deck, deckName);
+                    	newEditWindow.setVisible(true);
+        		        } catch(IOException | ClassNotFoundException i)
+        				{
+        		        	i.printStackTrace();
+        		        }
+        		}
+        		if (rVal == JFileChooser.CANCEL_OPTION) {
+        		    deckField.setText("You pressed cancel");
+        		    directoryField.setText("");
+        		}
+            }
+        });
+		
+		
 		add(newDeckButton, "wrap");
-		add(newLoadButton, "wrap");
+		add(loadButton, "wrap");
+		add(editButton, "wrap");
 		
 	}
 

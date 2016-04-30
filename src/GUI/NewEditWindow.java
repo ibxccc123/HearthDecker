@@ -26,7 +26,7 @@ import javax.swing.SpinnerNumberModel;
 import net.miginfocom.swing.MigLayout;
 
 //Child of JFrame
-public class NewDeckWindow extends JFrame {
+public class NewEditWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L; //SVU required for consistency amongst all compilers
 	private JPanel userPanel;
@@ -37,27 +37,25 @@ public class NewDeckWindow extends JFrame {
 	private JLabel confirmLabel; 
 	private int cardLabelsLength;
 	
-	NewDeckWindow(){
+	NewEditWindow(DeckList passedDeck, String deckFileName){
 		
 		//Sets up the Window's attributes
 		super("HearthDecker");  //Calls JFrame's constructor with HearthDecker as the argument.
 		setSize(700, 990);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new MigLayout());
-		
-		//Instantiates a new DeckList object for storing the card information 
-		//Will be serialized into a file 
-		deck = new DeckList();  
-		
+				
 		//Instantiates the Panels and JLabel Array
 		userPanel = new JPanel(new MigLayout());
 		viewingPanel = new JPanel(new MigLayout());
 		cardLabels = new ArrayList<JLabel>();	
 		removeButtons = new ArrayList<JButton>();
 		
-		//Initializes deck length
-		cardLabelsLength = 0;
-		
+		//Initializes deck and deck's length
+		deck = passedDeck;
+		cardLabelsLength = deck.getLength();
+		String exportedFileName = deckFileName.substring(0, deckFileName.lastIndexOf('.'));
+		JLabel deckLabel = new JLabel("Deck Loaded: " + exportedFileName);  
 		JLabel manaLabel = new JLabel("Mana:");
 		JLabel quantityLabel = new JLabel("Quantity:");
 		JLabel promptLabel = new JLabel("Type Card Name with Corresponding Mana & Quantity Below");
@@ -80,7 +78,7 @@ public class NewDeckWindow extends JFrame {
 
 				@Override
 				public void focusLost(FocusEvent e) {
-			
+					
 				}									
 			});
 			
@@ -111,6 +109,7 @@ public class NewDeckWindow extends JFrame {
         });
 
 		//Adds user interface to the userPanel
+		userPanel.add(deckLabel, "wrap");
 		userPanel.add(promptLabel, "wrap");
 		userPanel.add(textField);
 		userPanel.add(cardButton, "wrap");
@@ -126,6 +125,16 @@ public class NewDeckWindow extends JFrame {
 		for(int i=0; i<30; i++){  
 			cardLabels.add(new JLabel("----------------")); 
 			viewingPanel.add(cardLabels.get(i), "cell 0 " + Integer.toString(i)); //Adds label to panel
+		}
+		
+		//Loads deck into labels
+		for(int i=0; i<cardLabelsLength; i++){
+			Card card = deck.getCard(i);
+			int mana = card.getMana();;
+			String name = card.getName();
+			int quantity = card.getQuantity();
+			String labelText = Integer.toString(mana) + " " + name + " " + quantity;
+			cardLabels.get(i).setText(labelText);
 		}
 		
 		//Sets up remove buttons for the deck list
@@ -184,6 +193,10 @@ public class NewDeckWindow extends JFrame {
 		add(userPanel, "cell 0 0");
 		add(viewingPanel, "cell 1 0");	
 		
+		//resets the deck so that when it is saved, the deck is built up with no pre-existing data
+		deck.reset();
+		deck.resetLength();
+		
 	}
 	
 	public void editCards(String text, int mana, int quantity){
@@ -199,7 +212,7 @@ public class NewDeckWindow extends JFrame {
 					if(cardLabelsLength > 1){
 						sortCards();
 					}
-					confirmLabel.setText("Changes Made");
+					confirmLabel.setText("Changes Made");		
 					break;
 				}
 			}
@@ -230,7 +243,7 @@ public class NewDeckWindow extends JFrame {
 		JFileChooser c = new JFileChooser();
 		c.setCurrentDirectory(workingDirectory);
 		// Saves the DeckList
-		int rVal = c.showSaveDialog(NewDeckWindow.this);
+		int rVal = c.showSaveDialog(NewEditWindow.this);
 		if (rVal == JFileChooser.APPROVE_OPTION) {
 		    deckField.setText(c.getSelectedFile().getName());
 		    directoryField.setText(c.getCurrentDirectory().toString());

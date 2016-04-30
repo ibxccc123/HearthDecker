@@ -1,8 +1,5 @@
 package GUI;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,51 +9,33 @@ public class DeckList implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public List<String> cardNames;
-	public List<Integer> manaCosts;
-	public List<Integer> numberOf;
+	public List<Card> cards;
 	private int length;
 	
 	public DeckList(){
-		 cardNames = new ArrayList<String>();
-		 manaCosts = new ArrayList<Integer>();
-		 numberOf = new ArrayList<Integer>();
-		 length = 0;
-		
+		 cards = new ArrayList<Card>();
+		 length = 0;		
 	}
 	
 	public void printCardInfo(){
 		
 		System.out.println("In Deck: ");
-		for(int i=0; i < cardNames.size(); i++){
-			System.out.println(cardNames.get(i));
-			System.out.println("Mana : " + manaCosts.get(i));
-			System.out.println("Left : " + numberOf.get(i));
+		for(int i=0; i < cards.size(); i++){
+			Card currentCard = cards.get(i);
+			System.out.println(currentCard.getName());
+			System.out.println("Mana : " + currentCard.getMana());
+			System.out.println("Left : " + currentCard.getQuantity());
 		}
 		
 	}
 	
 	public void setCard(String name, int mana, int quantity){
-		
-		cardNames.add(name);
-		manaCosts.add(mana);
-		numberOf.add(quantity);		
+		Card card = new Card(name, mana, quantity);
+		cards.add(card);		
 	}
 	
-	public void saveList(String name){
-		
-		try
-		{
-			FileOutputStream fileOut = new FileOutputStream("Decks/" + name + ".ser");
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(this);
-			out.close();
-			fileOut.close();  //Closes the file that is being written into
-			System.out.println("Deck saved");
-			} catch(IOException i)
-			{
-				i.printStackTrace();
-			}
+	public Card getCard(int i){
+		return cards.get(i);
 	}
 	
 	public void increase(){
@@ -67,12 +46,16 @@ public class DeckList implements java.io.Serializable {
 		length--;
 	}
 	
-	public void reset(){
+	public void resetLength(){
 		length = 0;
 	}
 	
 	public int getLength(){
 		return length;
+	}
+	
+	public void reset(){
+		cards.clear();
 	}
 	
 }
